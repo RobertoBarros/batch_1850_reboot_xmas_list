@@ -1,3 +1,9 @@
+# Os presentes estão em uma array gifts no formato:
+# gifts = [
+#   {name: 'iPhone', bought: false},
+#   {name: 'Meia', bought: true},
+# ]
+
 require 'csv'
 FILEPATH = 'gifts.csv'
 
@@ -8,16 +14,15 @@ def mark(gifts)
   puts "Qual o numero a ser marcado como comprado? "
   index_gift = gets.chomp.to_i - 1
   if index_gift >= 0 && index_gift < gifts.count
+    # mark if bought
+    gift = gifts[index_gift] # => gift é um hash como {name: 'iPhone', bought: false}
+    gift[:bought] = true # gift[:bought] é o value da chave :bought e atribuindo `true`
 
-    gift = gifts[index_gift]
-    gift[:bought] = true
     save_csv(gifts)
   else
     puts "Número inválido!"
   end
-  # ask the number to choose
 
-  # mark if done
 end
 
 def list(gifts)
