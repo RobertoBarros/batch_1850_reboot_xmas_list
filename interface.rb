@@ -1,4 +1,7 @@
-gifts = []
+require 'csv'
+FILEPATH = 'gifts.csv'
+
+
 
 def list(gifts)
   gifts.each_with_index do |gift,index|
@@ -12,6 +15,7 @@ def add(gifts)
   add_gift = gets.chomp
   # adicionar o presente no array de gifts
   gifts << add_gift
+  save_csv(gifts)
 end
 
 def delete(gifts)
@@ -23,10 +27,32 @@ def delete(gifts)
   if index_gift >= 0 && index_gift < gifts.count
     # Remover do nosso array de gifts pelo index
     gifts.delete_at(index_gift)
+    save_csv(gifts)
   else
     puts "Número inválido!"
   end
 end
+
+def load_csv
+  gifts = []
+  if File.exist?(FILEPATH)
+    CSV.foreach(FILEPATH) do |row|
+      gifts << row[0]
+    end
+  end
+  gifts
+end
+
+
+def save_csv(gifts)
+  CSV.open(FILEPATH, "wb") do |csv|
+    gifts.each do |gift|
+      csv << [gift]
+    end
+  end
+end
+
+gifts = load_csv
 
 # Mensagem de boas vindas
 puts "Bem vindo a nossa lista de Natal!"
