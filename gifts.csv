@@ -1,7 +1,4 @@
-caneca,false
-iphone,true
-meia,true
-caneta,false
-macbook,false
-Black jeans,true
-Raincoat,false
+caneca,false,10
+iphone,true,10000
+meia,true,50
+mochila,true,"R$ 200,00"

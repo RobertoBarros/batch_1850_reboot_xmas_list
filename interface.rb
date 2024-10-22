@@ -1,7 +1,7 @@
 # Os presentes estão em uma array gifts no formato:
 # gifts = [
-#   {name: 'iPhone', bought: false},
-#   {name: 'Meia', bought: true},
+#   {name: 'iPhone', bought: false, price: '$ 60'},
+#   {name: 'Meia', bought: true, price: '$ 80'},
 # ]
 
 require 'csv'
@@ -31,16 +31,21 @@ end
 def list(gifts)
   gifts.each_with_index do |gift,index|
     box = gift[:bought] ? "[X]" : "[ ]"
-    puts "#{index+1} - #{box} #{gift[:name]}"
+    puts "#{index+1} - #{box} #{gift[:name]} - Preço: #{gift[:price]}"
   end
 end
 
 def add(gifts)
-  # Perguntar qual o presente a ser adicionado a lista
+  # Perguntar qual nome o presente a ser adicionado a lista
   puts "Qual o presente você quer adicionar a lista?"
   name = gets.chomp
+
+  # Perguntar o preço do presente
+  puts "Informe o valor do presente:"
+  price = gets.chomp
+
   # adicionar o presente no array de gifts
-  gifts << {name: name, bought: false}
+  gifts << {name: name, bought: false, price: price}
   save_csv(gifts)
 end
 
@@ -87,7 +92,7 @@ def import(gifts)
   puts "Importando o produto #{product[:name]}"
 
   # Adicionar o produto no array de gifts
-  gifts << {name: product[:name], bought: false}
+  gifts << {name: product[:name], bought: false, price: product[:price]}
 
 end
 
@@ -95,7 +100,7 @@ def load_csv
   gifts = []
   if File.exist?(FILEPATH)
     CSV.foreach(FILEPATH) do |row|
-      gifts << {name: row[0], bought: row[1] == "true"}
+      gifts << {name: row[0], bought: row[1] == "true", price: row[2]}
     end
   end
   gifts
@@ -106,7 +111,7 @@ def save_csv(gifts)
   CSV.open(FILEPATH, "wb") do |csv|
     gifts.each do |gift|
       # gift é um hash do tipo {name: 'meia', bought: false}
-      csv << [gift[:name], gift[:bought]]
+      csv << [gift[:name], gift[:bought], gift[:price]]
     end
   end
 end
