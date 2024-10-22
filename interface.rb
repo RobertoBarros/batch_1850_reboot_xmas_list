@@ -5,16 +5,17 @@ FILEPATH = 'gifts.csv'
 
 def list(gifts)
   gifts.each_with_index do |gift,index|
-    puts "#{index+1} - #{gift}"
+    box = gift[:bought] ? "[X]" : "[ ]"
+    puts "#{index+1} - #{box} #{gift[:name]}"
   end
 end
 
 def add(gifts)
   # Perguntar qual o presente a ser adicionado a lista
   puts "Qual o presente você quer adicionar a lista?"
-  add_gift = gets.chomp
+  name = gets.chomp
   # adicionar o presente no array de gifts
-  gifts << add_gift
+  gifts << {name: name, bought: false}
   save_csv(gifts)
 end
 
@@ -37,7 +38,7 @@ def load_csv
   gifts = []
   if File.exist?(FILEPATH)
     CSV.foreach(FILEPATH) do |row|
-      gifts << row[0]
+      gifts << {name: row[0], bought: row[1] == "true"}
     end
   end
   gifts
@@ -47,7 +48,8 @@ end
 def save_csv(gifts)
   CSV.open(FILEPATH, "wb") do |csv|
     gifts.each do |gift|
-      csv << [gift]
+      # gift é um hash do tipo {name: 'meia', bought: false}
+      csv << [gift[:name], gift[:bought]]
     end
   end
 end
