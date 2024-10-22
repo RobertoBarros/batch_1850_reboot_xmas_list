@@ -1,7 +1,24 @@
 require 'csv'
 FILEPATH = 'gifts.csv'
 
+def mark(gifts)
+  # show ther list of gifts
+  list(gifts)
+  # Perguntar qual o número do presente a ser deletado da lista
+  puts "Qual o numero a ser marcado como comprado? "
+  index_gift = gets.chomp.to_i - 1
+  if index_gift >= 0 && index_gift < gifts.count
 
+    gift = gifts[index_gift]
+    gift[:bought] = true
+    save_csv(gifts)
+  else
+    puts "Número inválido!"
+  end
+  # ask the number to choose
+
+  # mark if done
+end
 
 def list(gifts)
   gifts.each_with_index do |gift,index|
@@ -62,13 +79,14 @@ puts "Bem vindo a nossa lista de Natal!"
 # LOOP
 loop do
   # Perguntar qual opção deseja [list|add|delete|quit]
-  puts "Qual opção voce deseja executar?[list|add|delete|quit]"
+  puts "Qual opção voce deseja executar?[list|add|delete|mark|quit]"
   action = gets.chomp
   # Executar de acordo com o escolhido
   case action
   when "list" then list(gifts)
   when "add" then add(gifts)
   when "delete" then delete(gifts)
+  when "mark" then mark(gifts)
   when "quit"
     # Sair se for quit
     break
