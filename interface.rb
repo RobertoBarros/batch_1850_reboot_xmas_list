@@ -5,6 +5,9 @@
 # ]
 
 require 'csv'
+require 'open-uri'
+require 'nokogiri'
+
 FILEPATH = 'gifts.csv'
 
 def mark(gifts)
@@ -56,6 +59,38 @@ def delete(gifts)
   end
 end
 
+def import(gifts)
+  # Perguntar o que está procurando
+  puts "Qual produto está procurando?"
+  product = gets.chomp
+
+  # Fazer um scrape pelo produto está procurando
+  url = "https://letsy.lewagon.com/products?search=#{product}"
+  str = URI.parse(url).read
+  doc = Nokogiri::HTML.parse(str)
+
+  # Mostrar uma lista de produtos que podem ser importados
+  products = []
+  doc.search('li').each_with_index do |li, index|
+    name = li.search('h2').text
+    price = li.search('.price').text
+    products << {name: name, price: price}
+
+    puts "#{index + 1} - #{name} - #{price}"
+  end
+
+  # Perguntar qual o número do produto para importar
+  puts "Qual o número do produto para importar?"
+  index = gets.chomp.to_i - 1
+  product = products[index]
+
+  puts "Importando o produto #{product[:name]}"
+
+  # Adicionar o produto no array de gifts
+  gifts << {name: product[:name], bought: false}
+
+end
+
 def load_csv
   gifts = []
   if File.exist?(FILEPATH)
@@ -83,8 +118,8 @@ puts "Bem vindo a nossa lista de Natal!"
 
 # LOOP
 loop do
-  # Perguntar qual opção deseja [list|add|delete|quit]
-  puts "Qual opção voce deseja executar?[list|add|delete|mark|quit]"
+  # Perguntar qual opção deseja
+  puts "Qual opção voce deseja executar?[list|add|delete|mark|import|quit]"
   action = gets.chomp
   # Executar de acordo com o escolhido
   case action
@@ -92,6 +127,7 @@ loop do
   when "add" then add(gifts)
   when "delete" then delete(gifts)
   when "mark" then mark(gifts)
+  when "import" then import(gifts)
   when "quit"
     # Sair se for quit
     break
